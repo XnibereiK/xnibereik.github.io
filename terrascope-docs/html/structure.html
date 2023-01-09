@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Repo Structure &#8212; terrascope-ml  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Data" href="data.html" />
+    <link rel="prev" title="Network" href="network.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="repo-structure">
+<h1>Repo Structure<a class="headerlink" href="#repo-structure" title="Permalink to this heading">¶</a></h1>
+<p>This section talks about the intended structure of the repo. There are a couple different folders in this repo and each
+of them serves an important function. Here is a brief description for what they are.</p>
+<section id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this heading">¶</a></h2>
+<p>Contains all of the images and masks that are used for training and testing of the network i.e. datasets. The structure for each of the datasets is set up
+in the following way. They contain images, masks, and rgb_masks folders and a labels.json file describing the ontology used in the dataset.</p>
+</section>
+<section id="geoseg">
+<h2>GeoSeg<a class="headerlink" href="#geoseg" title="Permalink to this heading">¶</a></h2>
+<p>Contains the modified source code from the original UNetFormer <a class="reference external" href="https://github.com/WangLibo1995/GeoSeg">repository</a>.</p>
+<section id="geoseg-api-py">
+<h3>GeoSeg/API.py<a class="headerlink" href="#geoseg-api-py" title="Permalink to this heading">¶</a></h3>
+<p>Code used to runt the FastAPI app that serves the server functionality. Need to start it to make inference using the predict script.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="label2rgb">
+<span class="sig-name descname"><span class="pre">label2rgb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#label2rgb" title="Permalink to this definition">¶</a></dt>
+<dd><p>takes grayscale mask with values corresponding to category numbers and converts it to rgb mask using a labels.json file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="get_percentages">
+<span class="sig-name descname"><span class="pre">get_percentages</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prediction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_percentages" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates percent composition of the prediction, returns a list of percentages for each of the classes</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">image</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>issues predictions (inference) based on the supplied model. Returns an rgb mask with predictions and composition percentages from all of the classes</p>
+</dd></dl>
+
+</section>
+<section id="geoseg-training-py">
+<h3>GeoSeg/training.py<a class="headerlink" href="#geoseg-training-py" title="Permalink to this heading">¶</a></h3>
+<p>Code to run the usual training. Very similar to the original UNetFormer training script, but with tensorboard functionality enabled.</p>
+<p><strong>Important functions</strong></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="Supervision_Train">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Supervision_Train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pl.LightningModule</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#Supervision_Train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Training supervisor class inheriting from PyTorch Lightning’s Lightning Module. This class is compatible with Trainer and together they make for fast
+training with multiple workers running at the same time. Initialized with parameters from <strong>config.py</strong> file.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seed_everything">
+<span class="sig-name descname"><span class="pre">seed_everything</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">seed</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#seed_everything" title="Permalink to this definition">¶</a></dt>
+<dd><p>pseudo-random, but predictable initialization of the weights</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>wrapper for forward method (forward pass) of the model the module is supervising</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="custom_histogram_adder">
+<span class="sig-name descname"><span class="pre">custom_histogram_adder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#custom_histogram_adder" title="Permalink to this definition">¶</a></dt>
+<dd><p>adds histograms for all named weights to then post it to tensorboard.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="showActivations">
+<span class="sig-name descname"><span class="pre">showActivations</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#showActivations" title="Permalink to this definition">¶</a></dt>
+<dd><p>feeds a sample image through the network and captures activations at different layers, then forwards it to tensorboard</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="training_step">
+<span class="sig-name descname"><span class="pre">training_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#training_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>training step loads the images and masks from the batch using trainloader and inputs the batch into the model to do a
+forward pass. Prediction contains the pre-mask to calculate auxiliary loss (if active). Loss calculated from loss chosen in <strong>config.py</strong>.
+It uses torch optimizer. This function returns loss in a dictionary format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="training_epoch_end">
+<span class="sig-name descname"><span class="pre">training_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#training_epoch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates values of performance metrics, logs output to tensorboard.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="validation_step">
+<span class="sig-name descname"><span class="pre">validation_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#validation_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>see training_step</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="validation_epoch_end">
+<span class="sig-name descname"><span class="pre">validation_epoch_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#validation_epoch_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>see training_epoch_end</p>
+</dd></dl>
+
+</section>
+<section id="geoseg-grid-search-py">
+<h3>GeoSeg/grid_search.py<a class="headerlink" href="#geoseg-grid-search-py" title="Permalink to this heading">¶</a></h3>
+<p>Code to run a hyperparameter search (uses <a class="reference external" href="https://optuna.org/">Optuna</a>). It uses <strong>hps_config.py</strong> instead of the usual <strong>config.py</strong> as
+the setup is slightly different. It works on the same principles as training.py, but it bundles training using Optuna for
+hyperparameter search therefore running multiple trainings. It also allows for pruning.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="study.optimize">
+<span class="sig-prename descclassname"><span class="pre">study.</span></span><span class="sig-name descname"><span class="pre">optimize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#study.optimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>given some hyperparameters defined as an optuna variable, the program creates a study object that compares performance of different settings for the neural network.</p>
+</dd></dl>
+
+</section>
+<section id="geoseg-config-py-and-geoseg-hps-config-py">
+<h3>GeoSeg/config.py and GeoSeg/hps_config.py<a class="headerlink" href="#geoseg-config-py-and-geoseg-hps-config-py" title="Permalink to this heading">¶</a></h3>
+<p>Hyperparameters are declared here. This script also instantiates the dataset objects.</p>
+</section>
+</section>
+<section id="geoseg-geoseg">
+<h2>GeoSeg/geoseg<a class="headerlink" href="#geoseg-geoseg" title="Permalink to this heading">¶</a></h2>
+<p>ML-related code used for setup i.e. networks, dataset init, losses. Currenly, only UNetFormer is used for R&amp;D work.</p>
+</section>
+<section id="geoseg-tools">
+<h2>GeoSeg/tools<a class="headerlink" href="#geoseg-tools" title="Permalink to this heading">¶</a></h2>
+<p>Mask conversions, patch splitting, evaluation metrics calculation helpers, py2dict, py2cfg functions.</p>
+</section>
+<section id="lightning-logs">
+<h2>lightning_logs<a class="headerlink" href="#lightning-logs" title="Permalink to this heading">¶</a></h2>
+<p>Contains logs from all the recent runs that are used for posting to tensorboard and doing hyperparameter search.</p>
+</section>
+<section id="model-weights">
+<h2>model_weights<a class="headerlink" href="#model-weights" title="Permalink to this heading">¶</a></h2>
+<p>Contains model weights</p>
+</section>
+<section id="api-access-point">
+<h2>API_access_point<a class="headerlink" href="#api-access-point" title="Permalink to this heading">¶</a></h2>
+<p>Contains code used to interact with the API endpoint in the early form of development</p>
+<section id="api-access-point-predict-py">
+<h3>API_access_point/predict.py<a class="headerlink" href="#api-access-point-predict-py" title="Permalink to this heading">¶</a></h3>
+<p>As described above, the script pads the image and sends a request to app started by GeoSeg/API.py to get model predictions and some other info.</p>
+</section>
+<section id="tensorboarding-ipynb">
+<h3>tensorboarding.ipynb<a class="headerlink" href="#tensorboarding-ipynb" title="Permalink to this heading">¶</a></h3>
+<p>Starts a tensorboarding session.</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">terrascope-ml</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="network.html">Network</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Repo Structure</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data">Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#geoseg">GeoSeg</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#geoseg-api-py">GeoSeg/API.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#geoseg-training-py">GeoSeg/training.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#geoseg-grid-search-py">GeoSeg/grid_search.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#geoseg-config-py-and-geoseg-hps-config-py">GeoSeg/config.py and GeoSeg/hps_config.py</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#geoseg-geoseg">GeoSeg/geoseg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#geoseg-tools">GeoSeg/tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#lightning-logs">lightning_logs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#model-weights">model_weights</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-access-point">API_access_point</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-access-point-predict-py">API_access_point/predict.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tensorboarding-ipynb">tensorboarding.ipynb</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="network.html" title="previous chapter">Network</a></li>
+      <li>Next: <a href="data.html" title="next chapter">Data</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Terrascope.io Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/structure.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

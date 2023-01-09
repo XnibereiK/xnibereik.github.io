@@ -1,0 +1,17 @@
+Dependencies
+=============
+
+The dependencies for this project are still not properly established as of now, because the project is still in development phase, but few of the important dependencies 
+worth mentioning are listed here.
+
+**PyTorch** for all the machine learning functions such as dealing with tensors, making datasets, etc.
+
+**PyTorch** Lightning for training supervision, speed optimization, managing the model.
+
+**Optuna** for perfomance optimization of the model. Hyperparameter search, pruning.
+
+**Tensorboard** for model tracking, visualization, and inspection.
+
+**OpenCV** and **PIL** for image transformations.
+
+**Albumentations** for image augmentations.

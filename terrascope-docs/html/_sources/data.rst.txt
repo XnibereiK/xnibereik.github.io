@@ -1,0 +1,77 @@
+Data
+=====
+
+The current model works with .png files with resolution of up to 1024x1024. Small images are black center padded, support for large images is coming soon with image splitting.
+
+Currently the data in use comes from the datasets available on the internet and consists of a few popular datasets for benchmarking as well as some of Terrascope's proprietary dataset labeled in-house.
+
+Popular datasets in use:
+- LoveDA
+- Potsdam
+- Vaihingen
+
+.. note::
+    Each of the datasets has its own ontology, which can be viewed in the labels.json file included in each of the datasets.
+    The ontology can be reduced in order to get the model to focus on particular categories and make datasets compatible with each other 
+    and let the model learn on the intersection of the ontologies.
+
+Dataset canon
+--------------
+
+This section describes the format the data has to be in to be available for our pipeline for processing.
+
+Dataset directory structure:
+
+**dataset folder**
+- labels.json
+- annotations.csv
+- images folder
+- masks folder
+- rgb_masks folder
+
+labels.json
+~~~~~~~~~~~~
+Example: terascope ontology
+
+.. code-block:: console
+
+    {
+        "background":           [0, 0, 0],
+        "trees":                [25, 77, 51],
+        "grass":                [104, 188, 0],
+        "crops":                [176, 188, 0],
+        "sparse vegetation":    [128, 137, 0],
+        "dwelling structures":  [211, 49, 21],
+        "other structures":     [226, 115, 0],
+        "fences":               [254, 146, 0],
+        "pools":                [252, 196, 0],
+        "paved":                [252, 220, 0],
+        "moving":               [250, 40, 255],
+        "water":                [0, 156, 224],
+        "land":                 [22, 165, 165]
+    }
+
+annotations.csv
+~~~~~~~~~~~~~~~~
+Example: terrascope annotations
+
+.. code-block:: console
+    
+    ,images,masks
+    0,images/c1.png,masks/c1.png
+    1,images/c2.png,masks/c2.png
+    2,images/c3.png,masks/c3.png
+    3,images/c4.png,masks/c4.png
+    4,images/c5.png,masks/c5.png
+    5,images/c6.png,masks/c6.png
+    6,images/c7.png,masks/c7.png
+    7,images/c8.png,masks/c8.png
+    8,images/c9.png,masks/c9.png
+    9,images/c10.png,masks/c10.png
+    10,images/c11.png,masks/c11.png
+
+folders
+~~~~~~~
+
+masks and images need to have the same name and be in separate folders, namely **'images'** and **'masks'**
+in case masks come in RGB format, there is a function to convert to labels based on labels.json file

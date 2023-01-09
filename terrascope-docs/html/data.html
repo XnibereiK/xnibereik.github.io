@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Data &#8212; terrascope-ml  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Dependencies" href="dependencies.html" />
+    <link rel="prev" title="Structure" href="structure.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="data">
+<h1>Data<a class="headerlink" href="#data" title="Permalink to this heading">¶</a></h1>
+<p>The current model works with .png files with resolution of up to 1024x1024. Small images are black center padded, support for large images is coming soon with image splitting.</p>
+<p>Currently the data in use comes from the datasets available on the internet and consists of a few popular datasets for benchmarking as well as some of Terrascope’s proprietary dataset labeled in-house.</p>
+<p>Popular datasets in use:
+- LoveDA
+- Potsdam
+- Vaihingen</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Each of the datasets has its own ontology, which can be viewed in the labels.json file included in each of the datasets.
+The ontology can be reduced in order to get the model to focus on particular categories and make datasets compatible with each other
+and let the model learn on the intersection of the ontologies.</p>
+</div>
+<section id="dataset-canon">
+<h2>Dataset canon<a class="headerlink" href="#dataset-canon" title="Permalink to this heading">¶</a></h2>
+<p>This section describes the format the data has to be in to be available for our pipeline for processing.</p>
+<p>Dataset directory structure:</p>
+<p><strong>dataset folder</strong>
+- labels.json
+- annotations.csv
+- images folder
+- masks folder
+- rgb_masks folder</p>
+<section id="labels-json">
+<h3>labels.json<a class="headerlink" href="#labels-json" title="Permalink to this heading">¶</a></h3>
+<p>Example: terascope ontology</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">{</span>
+<span class="go">    &quot;background&quot;:           [0, 0, 0],</span>
+<span class="go">    &quot;trees&quot;:                [25, 77, 51],</span>
+<span class="go">    &quot;grass&quot;:                [104, 188, 0],</span>
+<span class="go">    &quot;crops&quot;:                [176, 188, 0],</span>
+<span class="go">    &quot;sparse vegetation&quot;:    [128, 137, 0],</span>
+<span class="go">    &quot;dwelling structures&quot;:  [211, 49, 21],</span>
+<span class="go">    &quot;other structures&quot;:     [226, 115, 0],</span>
+<span class="go">    &quot;fences&quot;:               [254, 146, 0],</span>
+<span class="go">    &quot;pools&quot;:                [252, 196, 0],</span>
+<span class="go">    &quot;paved&quot;:                [252, 220, 0],</span>
+<span class="go">    &quot;moving&quot;:               [250, 40, 255],</span>
+<span class="go">    &quot;water&quot;:                [0, 156, 224],</span>
+<span class="go">    &quot;land&quot;:                 [22, 165, 165]</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</section>
+<section id="annotations-csv">
+<h3>annotations.csv<a class="headerlink" href="#annotations-csv" title="Permalink to this heading">¶</a></h3>
+<p>Example: terrascope annotations</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">,images,masks</span>
+<span class="go">0,images/c1.png,masks/c1.png</span>
+<span class="go">1,images/c2.png,masks/c2.png</span>
+<span class="go">2,images/c3.png,masks/c3.png</span>
+<span class="go">3,images/c4.png,masks/c4.png</span>
+<span class="go">4,images/c5.png,masks/c5.png</span>
+<span class="go">5,images/c6.png,masks/c6.png</span>
+<span class="go">6,images/c7.png,masks/c7.png</span>
+<span class="go">7,images/c8.png,masks/c8.png</span>
+<span class="go">8,images/c9.png,masks/c9.png</span>
+<span class="go">9,images/c10.png,masks/c10.png</span>
+<span class="go">10,images/c11.png,masks/c11.png</span>
+</pre></div>
+</div>
+</section>
+<section id="folders">
+<h3>folders<a class="headerlink" href="#folders" title="Permalink to this heading">¶</a></h3>
+<p>masks and images need to have the same name and be in separate folders, namely <strong>‘images’</strong> and <strong>‘masks’</strong>
+in case masks come in RGB format, there is a function to convert to labels based on labels.json file</p>
+</section>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">terrascope-ml</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="network.html">Network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Structure</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#dataset-canon">Dataset canon</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#labels-json">labels.json</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#annotations-csv">annotations.csv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#folders">folders</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="structure.html" title="previous chapter">Structure</a></li>
+      <li>Next: <a href="dependencies.html" title="next chapter">Dependencies</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2023, Terrascope.io Inc..
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/data.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

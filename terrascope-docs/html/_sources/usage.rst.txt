@@ -1,0 +1,27 @@
+Usage
+=====
+
+.. _installation:
+
+Installation
+------------
+
+To use terrascope-ml repo, clone it from the GitHub like so:
+
+.. code-block:: console
+
+    git clone https://github.com/Terrascope-app/terrascope-ml
+    git checkout temp-ml-api #this is the working branch
+    conda create -n airs python=3.8
+    conda activate airs
+    conda install pytorch==1.10.0 torchvision==0.11.0 torchaudio==0.10.0 cudatoolkit=11.3 -c pytorch -c conda-forge
+    pip install -r requirements.txt
+
+.. note::
+
+    in case you're using your own machine and haven't previously used it for ML projects, make sure you have conda and nvidia drivers installed
+
+Remote access
+--------------
+
+In order to use the Terrascope.io Inc. CUDA-capable computer for development, reach out to us on Slack for details on account set up, ssh login, and established workflow.

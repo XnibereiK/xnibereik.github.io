@@ -1,0 +1,120 @@
+Repo Structure
+===============
+
+This section talks about the intended structure of the repo. There are a couple different folders in this repo and each 
+of them serves an important function. Here is a brief description for what they are.
+
+Data
+-------
+Contains all of the images and masks that are used for training and testing of the network i.e. datasets. The structure for each of the datasets is set up 
+in the following way. They contain images, masks, and rgb_masks folders and a labels.json file describing the ontology used in the dataset.
+
+GeoSeg
+-------
+Contains the modified source code from the original UNetFormer `repository <https://github.com/WangLibo1995/GeoSeg>`_.
+
+GeoSeg/API.py
+~~~~~~~~~~~~~~
+Code used to runt the FastAPI app that serves the server functionality. Need to start it to make inference using the predict script.
+
+.. py:function:: label2rgb(mask)
+
+    takes grayscale mask with values corresponding to category numbers and converts it to rgb mask using a labels.json file.
+
+.. py:function:: get_percentages(prediction)
+
+    calculates percent composition of the prediction, returns a list of percentages for each of the classes
+
+.. py:function:: predict(model,image)
+
+    issues predictions (inference) based on the supplied model. Returns an rgb mask with predictions and composition percentages from all of the classes
+
+GeoSeg/training.py
+~~~~~~~~~~~~~~~~~~~~~~
+Code to run the usual training. Very similar to the original UNetFormer training script, but with tensorboard functionality enabled.
+
+**Important functions**
+
+.. py:class:: Supervision_Train(pl.LightningModule)
+
+    Training supervisor class inheriting from PyTorch Lightning's Lightning Module. This class is compatible with Trainer and together they make for fast
+    training with multiple workers running at the same time. Initialized with parameters from **config.py** file.
+
+.. py:function:: seed_everything(int seed)
+
+    pseudo-random, but predictable initialization of the weights
+
+.. py:method:: forward(self,x)
+
+    wrapper for forward method (forward pass) of the model the module is supervising
+
+.. py:method:: custom_histogram_adder(self)
+
+    adds histograms for all named weights to then post it to tensorboard.
+
+.. py:method:: showActivations(self,x)
+
+    feeds a sample image through the network and captures activations at different layers, then forwards it to tensorboard 
+
+.. py:method:: training_step(self,batch,batch_idx)
+
+    training step loads the images and masks from the batch using trainloader and inputs the batch into the model to do a
+    forward pass. Prediction contains the pre-mask to calculate auxiliary loss (if active). Loss calculated from loss chosen in **config.py**.
+    It uses torch optimizer. This function returns loss in a dictionary format.
+
+.. py:method:: training_epoch_end(self,outputs)
+
+    calculates values of performance metrics, logs output to tensorboard.
+
+.. py:method:: validation_step(self,batch, batch_idx)
+
+    see training_step
+
+.. py:method:: validation_epoch_end(self,outputs)
+
+    see training_epoch_end
+
+GeoSeg/grid_search.py
+~~~~~~~~~~~~~~~~~~~~~~
+Code to run a hyperparameter search (uses `Optuna <https://optuna.org/>`_). It uses **hps_config.py** instead of the usual **config.py** as 
+the setup is slightly different. It works on the same principles as training.py, but it bundles training using Optuna for 
+hyperparameter search therefore running multiple trainings. It also allows for pruning. 
+
+.. py:function:: study.optimize()
+
+    given some hyperparameters defined as an optuna variable, the program creates a study object that compares performance of different settings for the neural network.
+
+
+GeoSeg/config.py and GeoSeg/hps_config.py
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Hyperparameters are declared here. This script also instantiates the dataset objects. 
+
+GeoSeg/geoseg
+--------------
+ML-related code used for setup i.e. networks, dataset init, losses. Currenly, only UNetFormer is used for R&D work.
+
+GeoSeg/tools
+--------------
+Mask conversions, patch splitting, evaluation metrics calculation helpers, py2dict, py2cfg functions.
+
+lightning_logs
+---------------
+Contains logs from all the recent runs that are used for posting to tensorboard and doing hyperparameter search.
+
+model_weights
+--------------
+Contains model weights
+
+API_access_point
+----------------
+Contains code used to interact with the API endpoint in the early form of development 
+
+API_access_point/predict.py
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+As described above, the script pads the image and sends a request to app started by GeoSeg/API.py to get model predictions and some other info.
+
+tensorboarding.ipynb
+~~~~~~~~~~~~~~~~~~~~~
+Starts a tensorboarding session.
+
+

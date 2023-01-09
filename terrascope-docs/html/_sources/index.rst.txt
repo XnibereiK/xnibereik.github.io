@@ -1,0 +1,38 @@
+.. terrascope-ml documentation master file, created by
+   sphinx-quickstart on Wed Jan  4 11:24:42 2023.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to terrascope-ml's documentation!
+=========================================
+
+**terrascope-ml** by **Terrascope.io Inc.** is a repository for Satellite Image analysis of the properties and the surrounding area used in generating objective 
+reports and personalized suggestions. This documentation includes overview of basic features and functions as well as example usage from perspective of the developer.  
+
+.. note::
+   
+   This project is under active development. Check out the :doc:`usage` section for further information, including how to
+   :ref:`install <installation>` the project. End-user documentation coming soon. As of version 0.1, the interface with the user is implemented as a simple
+   API endpoint available `here <https://world.openfoodfacts.org/>`_.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
+Contents
+--------
+
+.. toctree::
+
+   usage
+   network
+   structure
+   data
+   dependencies
